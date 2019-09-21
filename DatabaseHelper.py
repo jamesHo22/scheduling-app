@@ -35,7 +35,7 @@ def getSheetsService():
             creds.refresh(Request())
         else:
             flow = InstalledAppFlow.from_client_secrets_file(
-                'client_secret_738943635369-srdeg74vajc0qo1jcq5hudfmepb024iq.apps.googleusercontent.com.json', SCOPES)
+                'dontPush/client_secret_738943635369-srdeg74vajc0qo1jcq5hudfmepb024iq.apps.googleusercontent.com.json', SCOPES)
             creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
         with open('token.pickle', 'wb') as token:
