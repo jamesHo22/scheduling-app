@@ -1,5 +1,16 @@
 <!-- Basic App -->
-<form method="POST">
-    <input name="text">
-    <input type="submit">
-</form>
+<!DOCTYPE html>
+<html>
+    <body>
+
+        <h1>Timebox</h1>
+        <p>What are you doing?</p>
+        <p>New Action</p>
+
+        <form method="POST", action="{{ url_for('result') }}">
+            <input name="text">
+            <input type="submit">
+        </form>
+
+    </body>
+</html>
