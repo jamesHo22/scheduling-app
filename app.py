@@ -5,26 +5,27 @@ import DatabaseHelper as dh
 app = Flask(__name__)
 
 
-@app.route('/')
+@app.route('/hello')
 def hello():
+    
     return render_template('main.html')
 
-@app.route('/result', methods=['POST', 'GET'])
+@app.route('/', methods=['POST', 'GET'])
 def result():
     '''
     Handles what happens when submit is clicked
     '''
+    service = dh.getSheetsService()
+    
     if request.method == 'POST':
+
         result = request.form
-        # TODO: write method to connect to google sheets
-        service = dh.getSheetsService()
-        
         logEntry = []
         for key, value in result.items():
             logEntry.append(value)
-
+        dh.addLogEntry(service, logEntry[0])
      
-    dh.addLogEntry(service, logEntry[0])
+    
     recentActs = dh.getRecentActivities(service) 
     return render_template("main.html", result = recentActs)
 
