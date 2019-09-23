@@ -12,8 +12,10 @@ import datetime
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
 # The ID and range of a sample spreadsheet.
-SAMPLE_SPREADSHEET_ID = '1axzYqYD_jPpk99Zj_h-qfTfunXbLtzXmBragOJqS8t8'
-SAMPLE_RANGE_NAME = 'TimeLog!A2:E'
+SPREADSHEET_ID = '1axzYqYD_jPpk99Zj_h-qfTfunXbLtzXmBragOJqS8t8'
+LOG_RANGE = 'TimeLog!A2:E'
+RECENT_ACTIVITIES_RANGE = 'RecentActivities!A3:A'
+RECENT_COUNTS_RANGE = 'RecentActivities!B3:B'
 VALUE_INPUT_OPTION = 'USER_ENTERED'
 
 def getSheetsService():
@@ -35,7 +37,7 @@ def getSheetsService():
             creds.refresh(Request())
         else:
             flow = InstalledAppFlow.from_client_secrets_file(
-                'dontPush/client_secret_738943635369-srdeg74vajc0qo1jcq5hudfmepb024iq.apps.googleusercontent.com.json', SCOPES)
+                'dontPush/client_secret.json', SCOPES)
             creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
         with open('token.pickle', 'wb') as token:
@@ -53,23 +55,39 @@ def addLogEntry(service, logMessage):
     }
     
     result = service.spreadsheets().values().append(
-        spreadsheetId=SAMPLE_SPREADSHEET_ID, range=SAMPLE_RANGE_NAME,
+        spreadsheetId=SPREADSHEET_ID
+    , range=LOG_RANGE,
         valueInputOption=VALUE_INPUT_OPTION, body=body).execute()
     print('{0} cells updated.'.format(result.get('updatedCells')))
 
-    # sheet = service.spreadsheets()
-    # result = sheet.values().get(spreadsheetId=SAMPLE_SPREADSHEET_ID,
-    #                             range=SAMPLE_RANGE_NAME).execute()
-    # values = result.get('values', [])
+def getRecentActivities(service):
+    '''
+    service: a service object that is used to connect with google sheets
+    returns: List of strings that are ordered by number of times entered
+    '''
+    # Get the information
+    sheet = service.spreadsheets()
+    resultAct = sheet.values().get(spreadsheetId=SPREADSHEET_ID, range=RECENT_ACTIVITIES_RANGE).execute()
+    activities = resultAct.get('values', [])
+    lengthAct = len(activities)
+    resultCounts = sheet.values().get(spreadsheetId=SPREADSHEET_ID, range=RECENT_COUNTS_RANGE+str(2+lengthAct)).execute()
+    counts = resultCounts.get('values', [])
 
-    # if not values:
-    #     print('No data found.')
-    # else:
-    #     print('Name, Major:')
-    #     for row in values:
-    #         # Print columns A and E, which correspond to indices 0 and 4.
-    #         print('%s, %s' % (row[0], row[4]))
+    actCountList = []
 
+    if not activities or not counts:
+        print('No data found.')
+    else:
+        # reformat the data and sort
+        i = 0
+        while i < lengthAct:
+            actCountList.append([activities[i][0], int(counts[i][0])])
+            i += 1
+        # Sort based on number of times done
+        actCountList.sort(key=lambda x: x[1], reverse=True)
+    
+    return actCountList
+        
 
 if __name__ == '__main__':
     sheetsAuth()

@@ -2,12 +2,13 @@
 <html>
    <body>
       <table border = 1>
-         {% for key, value in result.items() %}
+         {% for key, value in result %}
             <tr>
                <th> {{ key }} </th>
                <td> {{ value }} </td>
             </tr>
          {% endfor %}
       </table>
+      <a href="{{url_for('hello')}}"></a>
    </body>
 </html>

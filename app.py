@@ -11,6 +11,9 @@ def hello():
 
 @app.route('/result', methods=['POST', 'GET'])
 def result():
+    '''
+    Handles what happens when submit is clicked
+    '''
     if request.method == 'POST':
         result = request.form
         # TODO: write method to connect to google sheets
@@ -21,8 +24,9 @@ def result():
             logEntry.append(value)
 
      
-    dh.addLogEntry(service, logEntry[0])    
-    return render_template("results.html", result = result)
+    dh.addLogEntry(service, logEntry[0])
+    recentActs = dh.getRecentActivities(service) 
+    return render_template("main.html", result = recentActs)
 
 
 if __name__ == '__main__':

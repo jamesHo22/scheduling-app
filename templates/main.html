@@ -10,7 +10,56 @@
         <form method="POST", action="{{ url_for('result') }}">
             <input name="text">
             <input type="submit">
+            
         </form>
-
+        &nbsp;
+        <table border = 1>
+            {% for activity, count in result %}
+                <tr>
+                    <td> {{ count }} </td>
+                    <td>
+                        <form action="{{ url_for('result') }}", method="POST">
+                            <button type="submit", name="your_name", value="{{activity}}", class="btn-link">{{activity}}</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
     </body>
+
+    <!-- <head>
+            <script type="text/javascript">
+        
+                // Wait for the page to load first
+                window.onload = function() {
+        
+                  //Get a reference to the link on the page
+                  // with an id of "mylink"
+                  var a = document.getElementById("mylink");
+        
+                  //Set code to run when the link is clicked
+                  // by assigning a function to "onclick"
+                  a.onclick = function() {
+        
+                    // Your code here...
+        
+                    //If you don't want the link to actually 
+                    // redirect the browser to another page,
+                    // "google.com" in our example here, then
+                    // return false at the end of this block.
+                    // Note that this also prevents event bubbling,
+                    // which is probably what we want here, but won't 
+                    // always be the case.
+                    return false;
+                  }
+                }
+            </script>
+        </head>
+
+        <body>
+            <a id="mylink" href="http://www.google.com">linky</a>        
+        </body> -->
+
+        
+    
 </html>
